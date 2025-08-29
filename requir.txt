@@ -1,0 +1,8 @@
+django 
+pillow
+requests
+django-allauth
+psycopg2
+psycopg
+jwt
+lazy

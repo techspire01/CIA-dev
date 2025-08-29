@@ -1,0 +1,316 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ announcement.title }} — CIA MachineryHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body class="bg-white">
+  <!-- Navbar -->
+  <nav class="bg-white border-b border-[#bba99a] fixed-header">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <!-- Left Side: Login + Search -->
+        <div class="flex items-center space-x-4 order-1">
+          <!-- Login Button -->
+          <a
+            href="{% url 'login' %}"
+            class="flex items-center space-x-2 text-[#3d2d29] hover:text-yellow-700 px-4 py-2  hover:text-white transition font-medium"
+          >
+            <i class="fas fa-user"></i>
+            <span>Login</span>
+          </a>
+          <!-- Search Bar -->
+          <div class="relative hidden md:block">
+            <input
+              type="text"
+              placeholder="Search..!!"
+              class="w-40 py-1 px-2 rounded-full text-[#000000] bg-[#FFF9E5] border border-[#000000] shadow-md rounded-full focus:outline-none pr-10 shadow-md search-box"
+            />
+            <button
+              class="absolute right-0 top-0 mt-2 mr-4 text-black hover:text-gray-800"
+              title="Search"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Center: Logo - Added margin -->
+                <a href="{% url 'index' %}" class="flex items-center space-x-4 order-2 mx-auto px-8">
+          <img
+            src="{% static 'images/CIA logo.png' %}"
+            alt="MachineryHub logo"
+            class="h-10 rounded-lg logo-black-filter"
+          
+          />
+          <span class="text-2xl font-bold text-black"
+            >CIA<span class="text-yellow-700">next</span></span
+            
+          >
+        </a>
+
+        <!-- Right Side: Navigation + Language - Added margin -->
+        <div class="hidden lg:flex items-center space-x-9 order-3 ml-4">
+          <a
+            href="{% url 'index' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition"
+            >Home</a>
+          <a
+            href="{% url 'about' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition"
+            >About Us</a
+          >
+          <a
+            href="{% url 'category' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition"
+            >Category</a>
+          <!-- Language Toggle -->
+          <button id="languageToggle" class="flex items-center space-x-1 text-[#3d2d29] hover:text-yellow-700 font-medium transition px-2 py-1 rounded-lg border border-gray-300 hover:border-yellow-500">
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F8b4537dd3fc94785bf1c6169a3c80769%2Fe2eef99b80e945699b2f2503b5a83ffa?format=webp&width=800" alt="Language Toggle" class="w-4 h-4">
+            <span id="currentLang" class="text-sm">EN</span>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="lg:hidden order-3 flex items-center space-x-4">
+          <!-- Mobile Language Switch -->
+          <button id="mobileLanguageToggle" class="flex items-center space-x-1 text-[#3d2d29] hover:text-yellow-700 transition px-2 py-1 rounded border border-gray-300">
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F8b4537dd3fc94785bf1c6169a3c80769%2Fe2eef99b80e945699b2f2503b5a83ffa?format=webp&width=800" alt="Language Toggle" class="w-4 h-4">
+            <span id="mobileLang" class="text-sm font-semibold">EN</span>
+          </button>
+          <button id="mobileMenuBtn" class="text-[#3d2d29] hover:text-yellow-700 transition">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobileMenu" class="lg:hidden hidden bg-white border-t border-[#bba99a] shadow-lg">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex flex-col space-y-4">
+          <!-- Mobile Search Bar -->
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search..!!"
+              class="w-[70%] mx-auto py-2 px-4 rounded-full text-[#000000] bg-[#FFF9E5] border border-[#000000] shadow-md focus:outline-none pr-10 search-box"
+            />
+            <button
+              class="absolute right-0 top-0 mt-2 mr-4 text-black hover:text-gray-800"
+              title="Search"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <a
+            href="{% url 'index' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition py-2 border-b border-gray-200"
+            >Home</a>
+          <a
+            href="{% url 'about' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition py-2 border-b border-gray-200"
+            >About Us</a
+          >
+          <a
+            href="{% url 'category' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition py-2 border-b border-gray-200"
+            >Category</a>
+          <div class="py-2">
+            <button
+              id="mobileProductsBtn"
+              class="text-[#3d2d29] hover:text-yellow-700 font-medium transition flex items-center justify-between w-full"
+            >
+              Products
+              <i class="fas fa-chevron-down text-sm"></i>
+            </button>
+            <div id="mobileProductsMenu" class="hidden mt-2 ml-4 space-y-2">
+              <a href="#" class="block text-gray-600 hover:text-yellow-700 transition py-1">Excavators</a>
+              <a href="#" class="block text-gray-600 hover:text-yellow-700 transition py-1">Bulldozers</a>
+              <a href="#" class="block text-gray-600 hover:text-yellow-700 transition py-1">Cranes</a>
+              <a href="#" class="block text-gray-600 hover:text-yellow-700 transition py-1">Forklifts</a>
+            </div>
+          </div>
+          <!-- Mobile Language Options -->
+          <div class="py-2 border-t border-gray-200">
+            <p class="text-[#3d2d29] font-medium py-2">Language</p>
+            <div class="ml-4 space-y-2">
+              <a href="#" class="block text-gray-600 hover:text-yellow-700 transition py-1">English</a>
+              <a href="#" class="block text-gray-600 hover:text-yellow-700 transition py-1">Tamil</a>
+             
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+    <!-- Breadcrumb -->
+    <div class="container mx-auto px-4 py-6">
+        <nav class="text-sm">
+            <a href="{% url 'index' %}" class="text-gray-600 hover:text-yellow-600">Home</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <a href="{% url 'announcement' %}" class="text-gray-600 hover:text-yellow-600">Announcements</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span class="text-gray-800">{{ announcement.title }}</span>
+        </nav>
+    </div>
+
+    <!-- Announcement Detail Section -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <!-- Announcement Content -->
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        {% if announcement.is_critical %}
+                        <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold mr-3">URGENT</span>
+                        {% else %}
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold mr-3">ANNOUNCEMENT</span>
+                        {% endif %}
+                        <span class="text-gray-500 text-sm">{{ announcement.date|date:"F d, Y" }}</span>
+                    </div>
+                    
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ announcement.title }}</h1>
+                    
+                    <div class="prose max-w-none mb-8">
+                        <p class="text-gray-700 leading-relaxed text-lg">{{ announcement.content }}</p>
+                    </div>
+
+                    <!-- Images -->
+                    {% if announcement.image1 or announcement.image2 or announcement.image3 %}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        {% if announcement.image1 %}
+                        <img src="{{ announcement.image1.url }}" alt="Announcement Image 1" class="w-full h-48 object-cover rounded-lg">
+                        {% endif %}
+                        {% if announcement.image2 %}
+                        <img src="{{ announcement.image2.url }}" alt="Announcement Image 2" class="w-full h-48 object-cover rounded-lg">
+                        {% endif %}
+                        {% if announcement.image3 %}
+                        <img src="{{ announcement.image3.url }}" alt="Announcement Image 3" class="w-full h-48 object-cover rounded-lg">
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Referral URL -->
+                    {% if announcement.referral_url %}
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Related Link</h3>
+                        <a href="{{ announcement.referral_url }}" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium">
+                            {{ announcement.referral_url }}
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- Back Button -->
+                    <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+                        <a href="{% url 'announcement' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                            ← Back to Announcements
+                        </a>
+                        {% if announcement.referral_url %}
+                        <a href="{{ announcement.referral_url }}" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-lg font-semibold transition">
+                            Visit Website
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Announcements Sidebar -->
+    {% if latest_announcements %}
+    <div class="fixed right-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-l-2xl p-6 w-80 hidden lg:block">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Latest Announcements</h3>
+        <div class="space-y-3">
+            {% for latest in latest_announcements %}
+            <a href="{% url 'announcement_detail' latest.id %}" class="block p-3 rounded-lg hover:bg-gray-50 transition">
+                <h4 class="font-semibold text-gray-800 text-sm mb-1">{{ latest.title }}</h4>
+                <p class="text-gray-500 text-xs">{{ latest.date|date:"M d, Y" }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-gray-800 py-4 border-t border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Company Info -->
+                <div class="text-center md:text-left">
+                    <div class="flex items-center justify-center md:justify-start mb-2">
+                        <img src="{% static 'images/CIA logo.png' %}" alt="CIA MachineryHub logo" class="h-6 w-6 mr-2 rounded-lg" />
+                        <div>
+                            <span class="text-sm font-bold">CIA</span>
+                            <span class="text-sm font-bold text-yellow-600">next</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center md:justify-start space-x-2">
+                        <a href="#" class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="text-center">
+                    <h4 class="text-sm font-bold mb-2 text-gray-800">Quick Links</h4>
+                    <div class="flex justify-center space-x-4">
+                        <a href="{% url 'index' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs">Home</a>
+                        <a href="{% url 'about' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs">About Us</a>
+                        <a href="#" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs">Products</a>
+                        <a href="{% url 'category' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs">Category</a>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="text-center md:text-right">
+                    <h4 class="text-sm font-bold mb-2 text-gray-800">Contact Info</h4>
+                    <div class="flex flex-col md:flex-row md:justify-end items-center gap-2">
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-center md:justify-end text-xs">
+                                <i class="fas fa-map-marker-alt text-yellow-600 mr-1"></i>
+                                <span class="text-gray-600">Mumbai, India</span>
+                            </div>
+                            <div class="flex items-center justify-center md:justify-end text-xs">
+                                <i class="fas fa-phone-alt text-yellow-600 mr-1"></i>
+                                <a href="tel:+911234567890" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">+91 12345 67890</a>
+                            </div>
+                            <div class="flex items-center justify-center md:justify-end text-xs">
+                                <i class="fas fa-envelope text-yellow-600 mr-1"></i>
+                                <a href="mailto:contact@machineryhub.com" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">contact@cia.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="border-t border-gray-300 mt-3 pt-2">
+                <div class="text-center">
+                    <div class="text-gray-500 text-xs">
+                        <p>© 2025 CIA. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
