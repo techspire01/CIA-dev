@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +29,8 @@ SECRET_KEY = 'django-insecure-4b^^gzvmc^_om1bf3cg8o3&lzr4b1xp%&v^=*m($=blp2j7vby
 DEBUG = True
 
 ALLOWED_HOSTS = ['10.86.214.51', 'localhost']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -196,3 +201,13 @@ EMAIL_HOST_PASSWORD = "MohanHari2224@"  # Google App Password
 AUTH_USER_MODEL = "app.CustomUser"
 
 SOCIALACCOUNT_LOGIN_ON_GET = True  # Automatically log in users after social login
+
+
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Whitenoise setup
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
