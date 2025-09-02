@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Supplier, Announcement, PhotoGallery, NewsGallery, TeamMember, PhotoGalleryImage, NewsGalleryImage
+from .models import CustomUser, Supplier, Announcement
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
@@ -70,46 +70,5 @@ class AnnouncementAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     ordering = ('-date',)
     date_hierarchy = 'date'
-
-class PhotoGalleryImageInline(admin.TabularInline):
-    model = PhotoGalleryImage
-    extra = 1
-    fields = ('image', 'caption', 'order', 'is_active')
-    readonly_fields = ('created_at',)
-
-@admin.register(PhotoGallery)
-class PhotoGalleryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'is_active', 'order', 'created_at')
-    list_filter = ('is_active', 'category', 'created_at')
-    search_fields = ('title', 'description', 'category')
-    ordering = ('order', 'created_at')
-    readonly_fields = ('created_at', 'updated_at')
-    list_editable = ('is_active', 'order')
-    inlines = [PhotoGalleryImageInline]
-
-class NewsGalleryImageInline(admin.TabularInline):
-    model = NewsGalleryImage
-    extra = 1
-    fields = ('image', 'caption', 'order', 'is_active')
-    readonly_fields = ('created_at',)
-
-@admin.register(NewsGallery)
-class NewsGalleryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date', 'is_active', 'order', 'created_at')
-    list_filter = ('is_active', 'date', 'created_at')
-    search_fields = ('title', 'description')
-    ordering = ('order', '-date')
-    date_hierarchy = 'date'
-    readonly_fields = ('created_at', 'updated_at')
-    list_editable = ('is_active', 'order')
-    inlines = [NewsGalleryImageInline]
-
-@admin.register(TeamMember)
-class TeamMemberAdmin(admin.ModelAdmin):
-    list_display = ('name', 'position', 'email', 'is_active', 'order')
-    list_filter = ('is_active', 'position')
-    search_fields = ('name', 'position', 'bio', 'email')
-    ordering = ('order', 'name')
-    list_editable = ('is_active', 'order')
 
 admin.site.register(CustomUser, CustomUserAdmin)
