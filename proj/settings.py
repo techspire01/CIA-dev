@@ -90,14 +90,13 @@ WSGI_APPLICATION = 'proj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 """
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cia_dev',
         'USER': 'postgres',
         'PASSWORD': '2212',
-        'HOST': '10.86.214.51',   # ✅ host IP
+       # 'HOST': '10.86.214.51',   # ✅ host IP
         'PORT': '5432',
     }
 }
@@ -108,6 +107,7 @@ DATABASES={
         default=os.getenv("DATABASE_URL")  # Render gives this
     )
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
