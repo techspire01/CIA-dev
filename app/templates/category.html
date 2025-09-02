@@ -341,7 +341,7 @@
         </div>
     </div>
 
-    <!-- Call to Action 
+    <!-- Call to Action -->
     <section class="py-12 bg-yellow-500 text-white">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-3xl font-bold mb-4">Can't Find What You're Looking For?</h2>
@@ -358,121 +358,85 @@
             </div>
         </div>
     </section>
-    -->
 
     <!-- Footer -->
-  <footer class="bg-gray-100 text-gray-800 py-4 border-t border-gray-200">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Company Info -->
-        <div class="text-center md:text-left">
-          <div class="flex items-center justify-center md:justify-start mb-2">
-            <img
-              src="{% static 'images/CIA logo.png' %}"
-              alt="CIA MachineryHub logo"
-              class="h-6 w-6 mr-2 rounded-lg"
-            />
-            <div>
-              <span class="text-sm font-bold">CIA</span>
-              <span class="text-sm font-bold text-yellow-600">next</span>
+    <footer class="bg-gray-100 text-gray-800 pt-8 pb-6 border-t border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="{% static 'images/CIA logo.png' %}" alt="CIA MachineryHub logo" class="h-8 w-8 mr-2 rounded-lg">
+                        <div>
+                            <span class="text-lg font-bold">CIA</span>
+                            <span class="text-lg font-bold text-yellow-600">next</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        India's premier heavy equipment marketplace connecting buyers and sellers since 2010.
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'index' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">Home</a></li>
+                        <li><a href="{% url 'about' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">About Us</a></li>
+                        <li><a href="{% url 'category' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">Categories</a></li>
+                        <li><a href="{% url 'suppliers' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">Suppliers</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800">Contact Info</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start text-sm">
+                            <i class="fas fa-map-marker-alt text-yellow-600 mr-2 mt-0.5"></i>
+                            <span class="text-gray-600">MachineryHub Tower, Mumbai, India</span>
+                        </li>
+                        <li class="flex items-center text-sm">
+                            <i class="fas fa-phone-alt text-yellow-600 mr-2"></i>
+                            <a href="tel:+911234567890" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">+91 12345 67890</a>
+                        </li>
+                        <li class="flex items-center text-sm">
+                            <i class="fas fa-envelope text-yellow-600 mr-2"></i>
+                            <a href="mailto:contact@machineryhub.com" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">contact@machineryhub.com</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-          </div>
-          <div class="flex justify-center md:justify-start space-x-2">
-            <a
-              href="#"
-              class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs"
-              ><i class="fab fa-facebook-f"></i
-            ></a>
-            <a
-              href="#"
-              class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs"
-              ><i class="fab fa-twitter"></i
-            ></a>
-            <a
-              href="#"
-              class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs"
-              ><i class="fab fa-linkedin-in"></i
-            ></a>
-            <a
-              href="#"
-              class="w-6 h-6 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-xs"
-              ><i class="fab fa-instagram"></i
-            ></a>
-          </div>
-        </div>
-
-        <!-- Quick Links -->
-        <div class="text-center">
-          <h4 class="text-sm font-bold mb-2 text-gray-800">Quick Links</h4>
-          <div class="flex justify-center space-x-4">
-            <a
-              href="{% url 'index' %}"
-              class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs"
-            >
-              Home
-            </a>
-            <a
-              href="{% url 'about' %}"
-              class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs"
-            >
-              About Us
-            </a>
-            <a
-              href="{% url 'category' %}"
-              class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs"
-            >
-              Category
-            </a>
-            <a
-              href="{% url 'suppliers' %}"
-              class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-xs"
-            >
-              Suppliers
-            </a>
-          </div>
-        </div>
-
-            <!-- Contact Info -->
-            <div class="text-center md:text-right">
-              <h4 class="text-sm font-bold mb-2 text-gray-800">Contact Info</h4>
-              <div class="space-y-1">
-                <div class="flex items-start justify-center md:justify-end text-xs">
-                  <i class="fas fa-map-marker-alt text-yellow-600 mr-2 mt-0.5"></i>
-                  <span class="text-gray-600 text-left">CIA - Chinnavedampatti Industrial Association<br>No.10, OmSakthi Nagar, Chinnavedampatti,<br>Coimbatore - 641049, Tamil Nadu, India.</span>
+            
+            <!-- Bottom Section -->
+            <div class="border-t border-gray-300 mt-6 pt-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-500 text-sm mb-2 md:mb-0">
+                        &copy; 2025 CIA MachineryHub. All rights reserved.
+                    </div>
+                    <div class="flex space-x-4 text-sm">
+                        <a href="#" class="text-gray-500 hover:text-yellow-600 transition-colors duration-300">Privacy Policy</a>
+                        <a href="#" class="text-gray-500 hover:text-yellow-600 transition-colors duration-300">Terms of Service</a>
+                        <a href="#" class="text-gray-500 hover:text-yellow-600 transition-colors duration-300">Cookie Policy</a>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center md:justify-end text-xs">
-                  <i class="fas fa-phone-alt text-yellow-600 mr-2"></i>
-                  <a href="tel:+919087133005" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">+91 9087133005</a>
-                </div>
-                <div class="flex items-center justify-center md:justify-end text-xs">
-                  <i class="fas fa-envelope text-yellow-600 mr-2"></i>
-                  <a href="mailto:contact@machineryhub.com" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">contact@machineryhub.com</a>
-                </div>
-              </div>
             </div>
-      </div>
-
-      <!-- Bottom Section -->
-      <div class="border-t border-gray-300 mt-3 pt-2">
-        <div class="flex flex-col md:flex-row justify-between items-center text-gray-500 text-xs">
-          <div class="mb-2 md:mb-0">
-            <p>© 2025 CIA. All rights reserved.</p>
-          </div>
-          <div>
-            <p>Developed by <a href="https://www.sankara.ac.in/science-and-commerce/" target="_blank" class="text-yellow-600 hover:text-yellow-700 font-semibold transition-colors duration-300">CODERS CLUB SANSAC</a></p>
-          </div>
         </div>
-      </div>
-    </div>
-  </footer><!-- Announcement Button & Bar -->
-  <div class="announcement-popup-container">
-    <a href="{% url 'announcement' %}">
-      <button class="announcement-btn" id="announcementBtn" title="Show Announcement">
-        <span class="announcement-btn-icon">📢</span>
-        <span class="announcement-btn-label">Announcement</span>
-      </button>
-    </a>
-  </div>
+    </footer>
+
 
 
     <!-- Company Details Modal -->
@@ -602,7 +566,6 @@
     
 </body>
 </html>
- <script>
     function closeCompanyModal() {
         document.getElementById('companyModal').classList.add('hidden');
     }
