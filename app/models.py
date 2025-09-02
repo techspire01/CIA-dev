@@ -109,6 +109,24 @@ class CustomUser(AbstractUser):
     class Meta:
         swappable = 'AUTH_USER_MODEL'
 
+class TeamMember(models.Model):
+    name = models.CharField(max_length=255)
+    position = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="team/images/", blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    linkedin_url = models.URLField(max_length=500, blank=True, null=True)
+    twitter_url = models.URLField(max_length=500, blank=True, null=True)
+    instagram_url = models.URLField(max_length=500, blank=True, null=True)
+    email = models.EmailField(max_length=255, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return f"{self.name} - {self.position}"
+
 class PasswordResetOTP(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     otp = models.CharField(max_length=6)
@@ -116,3 +134,71 @@ class PasswordResetOTP(models.Model):
 
     def is_valid(self):
         return timezone.now() < self.created_at + datetime.timedelta(minutes=10)
+
+class PhotoGallery(models.Model):
+    title = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="gallery/photos/")
+    description = models.TextField(blank=True, null=True)
+    category = models.CharField(max_length=100, blank=True, null=True, help_text="Optional category for organizing photos")
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', '-created_at']
+        verbose_name = "Photo Gallery"
+        verbose_name_plural = "Photo Gallery"
+
+    def __str__(self):
+        return self.title
+
+class PhotoGalleryImage(models.Model):
+    photo_gallery = models.ForeignKey(PhotoGallery, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to="gallery/photos/")
+    caption = models.CharField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'created_at']
+        verbose_name = "Photo Gallery Image"
+        verbose_name_plural = "Photo Gallery Images"
+
+    def __str__(self):
+        return f"Image for {self.photo_gallery.title} - {self.caption or 'No Caption'}"
+
+class NewsGallery(models.Model):
+    title = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="gallery/news/")
+    description = models.TextField(blank=True, null=True)
+    date = models.DateTimeField(default=timezone.now, help_text="Date when the news item occurred")
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', '-date']
+        verbose_name = "News Gallery"
+        verbose_name_plural = "News Gallery"
+
+    def __str__(self):
+        return f"{self.title} - {self.date.strftime('%Y-%m-%d')}"
+
+class NewsGalleryImage(models.Model):
+    news_gallery = models.ForeignKey(NewsGallery, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to="gallery/news/")
+    caption = models.CharField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'created_at']
+        verbose_name = "News Gallery Image"
+        verbose_name_plural = "News Gallery Images"
+
+    def __str__(self):
+        return f"Image for {self.news_gallery.title} - {self.caption or 'No Caption'}"

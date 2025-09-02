@@ -4,10 +4,9 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.db import models
 import random
-from .models import Supplier, CustomUser, PasswordResetOTP, Announcement
+from .models import Supplier, CustomUser, PasswordResetOTP, Announcement, PhotoGallery, NewsGallery
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
-from .models import Supplier
 import json
 from .forms import SupplierForm
 
@@ -49,7 +48,108 @@ def index(request):
     return render(request, "index.html", context)
 
 def about(request):
-    return render(request, "about.html")
+    # Fetch gallery images from Supplier model
+    gallery_images = []
+    suppliers = Supplier.objects.all()
+    for supplier in suppliers:
+        if supplier.logo:
+            gallery_images.append({
+                'url': supplier.logo.url,
+                'alt': f"{supplier.name} logo",
+                'type': 'logo'
+            })
+        if supplier.image:
+            gallery_images.append({
+                'url': supplier.image.url,
+                'alt': f"{supplier.name} image",
+                'type': 'image'
+            })
+        if supplier.person_image:
+            gallery_images.append({
+                'url': supplier.person_image.url,
+                'alt': f"{supplier.contact_person_name or supplier.name} person",
+                'type': 'person'
+            })
+        for i in range(1, 5):
+            product_image = getattr(supplier, f'product_image{i}')
+            if product_image:
+                gallery_images.append({
+                    'url': product_image.url,
+                    'alt': f"{supplier.name} product {i}",
+                    'type': 'product'
+                })
+
+    # Fetch news images from Announcement model
+    news_images = []
+    announcements = Announcement.objects.filter(is_active=True).order_by('-date')
+    for announcement in announcements:
+        for i in range(1, 4):
+            image_field = getattr(announcement, f'image{i}')
+            if image_field:
+                news_images.append({
+                    'url': image_field.url,
+                    'alt': announcement.title,
+                    'type': 'news',
+                    'title': announcement.title,
+                    'date': announcement.date.strftime('%Y-%m-%d')
+                })
+
+    # Fetch team members from TeamMember model
+    from .models import TeamMember
+    team_members = TeamMember.objects.filter(is_active=True).order_by('order', 'name')
+
+    context = {
+        'gallery_images': gallery_images,
+        'news_images': news_images,
+        'team_members': team_members,
+    }
+    return render(request, "about.html", context)
+
+def photo_gallery(request):
+    # Fetch gallery images from PhotoGallery model
+    gallery_images = []
+    photos = PhotoGallery.objects.filter(is_active=True)
+    for photo in photos:
+        gallery_images.append({
+            'url': photo.image.url,
+            'alt': photo.title,
+            'type': 'photo',
+            'title': photo.title,
+            'description': photo.description,
+            'category': photo.category,
+            'date': photo.created_at.strftime('%Y-%m-%d')
+        })
+
+    # Get unique categories for filter dropdown
+    categories = PhotoGallery.objects.filter(
+        is_active=True,
+        category__isnull=False
+    ).exclude(category='').values_list('category', flat=True).distinct()
+
+    context = {
+        'gallery_images': gallery_images,
+        'categories': categories,
+    }
+    return render(request, "photo_gallery.html", context)
+
+def news_gallery(request):
+    # Fetch news images from NewsGallery model
+    news_images = []
+    news_items = NewsGallery.objects.filter(is_active=True)
+    for news_item in news_items:
+        news_images.append({
+            'url': news_item.image.url,
+            'alt': news_item.title,
+            'type': 'news',
+            'title': news_item.title,
+            'description': news_item.description,
+            'date': news_item.date.strftime('%Y-%m-%d')
+        })
+
+    context = {
+        'news_images': news_images,
+    }
+    return render(request, "news_gallery.html", context)
 
 def announcement(request):
     # Get filter parameters from request
