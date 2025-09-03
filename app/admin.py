@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Supplier, Announcement
+from .models import CustomUser, Supplier, Announcement, PhotoGallery
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
@@ -70,5 +70,12 @@ class AnnouncementAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     ordering = ('-date',)
     date_hierarchy = 'date'
+
+@admin.register(PhotoGallery)
+class PhotoGalleryAdmin(admin.ModelAdmin):
+    list_display = ('title', 'image', 'uploaded_at')
+    list_filter = ('uploaded_at',)
+    search_fields = ('title',)
+    ordering = ('-uploaded_at',)
 
 admin.site.register(CustomUser, CustomUserAdmin)

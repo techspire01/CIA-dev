@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.db import models
 import random
-from .models import Supplier, CustomUser, PasswordResetOTP, Announcement
+from .models import Supplier, CustomUser, PasswordResetOTP, Announcement, PhotoGallery
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from .models import Supplier
@@ -49,7 +49,16 @@ def index(request):
     return render(request, "index.html", context)
 
 def about(request):
-    return render(request, "about.html")
+    # Fetch latest 6 images from PhotoGallery
+    latest_photos = PhotoGallery.objects.all()[:6]
+    total_photos = PhotoGallery.objects.count()
+
+    context = {
+        'latest_photos': latest_photos,
+        'total_photos': total_photos,
+        'show_view_more': total_photos > 6
+    }
+    return render(request, "about.html", context)
 
 def announcement(request):
     # Get filter parameters from request
@@ -688,3 +697,13 @@ def search_results(request):
     }
     
     return render(request, "search_results.html", context)
+
+def photo_gallery(request):
+    # Fetch all images from PhotoGallery
+    all_photos = PhotoGallery.objects.all()
+
+    context = {
+        'all_photos': all_photos,
+        'total_photos': all_photos.count()
+    }
+    return render(request, "photo_gallery.html", context)

@@ -694,58 +694,23 @@
                 </p>
             </div>
 
-            <!-- Enhanced Modern Gallery Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full" style="min-height: 400px;">
-                <!-- Large Featured Image -->
-                <div class="md:col-span-2 lg:col-span-2 gallery-item cursor-pointer" style="min-height: 400px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2F0eab0a12bc5e4b7ab283f167622b8181?format=webp&width=800" alt="CIA Industrial Association" class="w-full h-full object-cover" loading="lazy" />
+            <!-- Dynamic Photo Gallery Grid -->
+            <div class="grid grid-cols-3 grid-rows-2 gap-6 w-full" style="min-height: 750px;">
+                {% for photo in latest_photos %}
+                <div class="gallery-item cursor-pointer" style="width: 500px; height: 500px;">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.title|default:'CIA Photo' }}" style="width: 500px; height: 500px; object-fit: cover;" loading="lazy" />
                 </div>
-
-                <!-- Medium Image -->
-                <div class="gallery-item cursor-pointer" style="min-height: 300px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2Fcb9d3840b4bb418392ab4b53394597a5?format=webp&width=800" alt="CIA Activities" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Medium Image -->
-                <div class="gallery-item cursor-pointer" style="min-height: 300px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2Fedcb536e98634015815d0c7dceca0f46?format=webp&width=800" alt="Industrial Events" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Wide Image -->
-                <div class="md:col-span-2 gallery-item cursor-pointer" style="min-height: 350px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2F2319b043fa96492ba206d89ba68dff31?format=webp&width=800" alt="CIA Meeting" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Square Image -->
-                <div class="gallery-item cursor-pointer" style="min-height: 300px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2F6da068926a1448ec93210eb24e1b36f6?format=webp&width=800" alt="Technology Solutions" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Square Image -->
-                <div class="gallery-item cursor-pointer" style="min-height: 300px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2Fb080864121124983975db8ed2d09355b?format=webp&width=800" alt="Community Partnership" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Medium Image -->
-                <div class="gallery-item cursor-pointer" style="min-height: 300px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2F46cb2205c15545a8ae8ccd2bc5bfb870?format=webp&width=800" alt="Manufacturing Process" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Large Featured Image -->
-                <div class="md:col-span-2 lg:col-span-2 gallery-item cursor-pointer" style="min-height: 400px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2Fc2cf39776c36494abc38d5cb0b7d0a96?format=webp&width=800" alt="Industrial Setup" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Small Image -->
-                <div class="gallery-item cursor-pointer" style="min-height: 250px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2F80c9814ef7f143c6a723ffbfecb328b7?format=webp&width=800" alt="Leadership Team" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-
-                <!-- Small Image -->
-                <div class="gallery-item cursor-pointer" style="min-height: 250px;">
-                    <img src="https://cdn.builder.io/api/v1/image/assets%2F966cb811668545aebb2398149919fdac%2Ff223c9529a4140d9a81d26117fbd8477?format=webp&width=800" alt="Industry Excellence" class="w-full h-full object-cover" loading="lazy" />
-                </div>
+                {% endfor %}
             </div>
+
+            <!-- View More Button -->
+            {% if show_view_more %}
+            <div class="text-center mt-8">
+                <a href="{% url 'photo_gallery' %}" class="inline-block bg-yellow-600 text-white px-8 py-3 rounded-full font-bold hover:bg-yellow-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    View More Photos
+                </a>
+            </div>
+            {% endif %}
         </div>
     </section>
 

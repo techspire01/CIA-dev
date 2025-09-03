@@ -116,3 +116,14 @@ class PasswordResetOTP(models.Model):
 
     def is_valid(self):
         return timezone.now() < self.created_at + datetime.timedelta(minutes=10)
+
+class PhotoGallery(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(upload_to="photogallery/images/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return self.title or f"Photo {self.id}"

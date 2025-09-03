@@ -27,4 +27,7 @@ urlpatterns = [
 
     # Search results page
     path('search/', views.search_results, name='search_results'),
+
+    # Photo gallery page
+    path('photo-gallery/', views.photo_gallery, name='photo_gallery'),
 ]
