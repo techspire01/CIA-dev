@@ -93,10 +93,10 @@ WSGI_APPLICATION = 'proj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cia_dev',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': '2212',
-       # 'HOST': '10.86.214.51',   # ✅ host IP
+        'PASSWORD': 'aFdtupVD1S5HrbbD',
+        'HOST': 'db.wrezjfnkxqcjvbcpuhcr.supabase.co',
         'PORT': '5432',
     }
 }
