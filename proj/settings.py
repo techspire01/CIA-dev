@@ -100,14 +100,19 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-"""
+
 
 DATABASES={
     'default': dj_database_url.config(
         default=os.getenv("DATABASE_URL")  # Render gives this
     )
 }
-
+"""
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f"postgres://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}:{os.environ.get('DB_PORT')}/{os.environ.get('DB_NAME')}"
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
