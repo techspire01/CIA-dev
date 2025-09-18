@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.utils.html import format_html
 from .models import CustomUser, Supplier, Announcement, PhotoGallery
 
 class CustomUserAdmin(UserAdmin):
@@ -74,25 +73,9 @@ class AnnouncementAdmin(admin.ModelAdmin):
 
 @admin.register(PhotoGallery)
 class PhotoGalleryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'image_preview', 'uploaded_at')
+    list_display = ('title', 'image', 'uploaded_at')
     list_filter = ('uploaded_at',)
     search_fields = ('title',)
     ordering = ('-uploaded_at',)
-    readonly_fields = ('current_image_preview',)
-
-    def image_preview(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', obj.image.url)
-        return "No Image"
-    image_preview.short_description = 'Image Preview'
-
-    def current_image_preview(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" width="200" height="200" style="object-fit: cover; border: 1px solid #ccc;" />', obj.image.url)
-        return "No image uploaded yet"
-    current_image_preview.short_description = 'Current Image Preview'
-
-    class Media:
-        js = ('admin/js/photo_gallery_preview.js',)
 
 admin.site.register(CustomUser, CustomUserAdmin)

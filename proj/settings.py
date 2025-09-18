@@ -28,15 +28,10 @@ SECRET_KEY = 'django-insecure-4b^^gzvmc^_om1bf3cg8o3&lzr4b1xp%&v^=*m($=blp2j7vby
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-ALLOWED_HOSTS = ['*']
-'''
 ALLOWED_HOSTS = ['10.86.214.51', 'localhost']
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
-ALLOWED_HOSTS = ["cianext.onrender.com", "localhost", "127.0.0.1"]
 
-'''
-
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -70,7 +65,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',  # Added for django-allauth
-    "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
 
 ROOT_URLCONF = 'proj.urls'
@@ -95,45 +89,32 @@ WSGI_APPLICATION = 'proj.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-
-'''
-
+"""
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL")
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'aFdtupVD1S5HrbbD',
+        'HOST': 'db.wrezjfnkxqcjvbcpuhcr.supabase.co',
+        'PORT': '5432',
+    }
 }
 
+
+DATABASES={
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL")  # Render gives this
+    )
+}
+"""
 DATABASES = {
     'default': dj_database_url.config(
         default=f"postgres://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}:{os.environ.get('DB_PORT')}/{os.environ.get('DB_NAME')}"
     )
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'db.wrezjfnkxqcjvbcpuhcr.supabase.co',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'aFdtupVD1S5HrbbD',
-        'PORT': '5432',
-    }
-}
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'aws-1-ap-south-1.pooler.supabase.com',
-        'NAME': 'postgres',
-        'USER': 'postgres.wrezjfnkxqcjvbcpuhcr',
-        'PASSWORD': 'aFdtupVD1S5HrbbD',
-        'PORT': '6543',
-    }
-}
-
-
+# Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
