@@ -1,0 +1,589 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Categories - CIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-gray-50">
+    <!-- Navbar -->
+  <nav class="bg-white border-b border-[#bba99a] fixed-header">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <!-- Left Side: Login + Search -->
+        <div class="flex items-center space-x-4 order-1">
+          <!-- Login Button -->
+          {% if user.is_authenticated %}
+            <!-- Profile Icon with Initials -->
+            <div class="relative group">
+              <button id="profileBtn" class="w-10 h-10 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold text-lg focus:outline-none">
+                {{ user.get_full_name|default:user.email|slice:":1"|upper }}
+              </button>
+              <!-- Dropdown Menu -->
+              <div id="profileDropdown" class="absolute left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden group-focus:block group-hover:block">
+                <div class="px-4 py-2 text-gray-800 font-semibold border-b">{{ user.get_full_name|default:user.email }}</div>
+                <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-700 hover:bg-yellow-100 transition rounded-b-lg">
+                  <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </a>
+              </div>
+            </div>
+            <script>
+              // Show/hide dropdown on click
+              document.addEventListener('DOMContentLoaded', function() {
+                const btn = document.getElementById('profileBtn');
+                const dropdown = document.getElementById('profileDropdown');
+                btn.addEventListener('click', function(e) {
+                  e.stopPropagation();
+                  dropdown.classList.toggle('hidden');
+                });
+                document.addEventListener('click', function(e) {
+                  if (!btn.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                  }
+                });
+              });
+            </script>
+          {% else %}
+            <a
+              href="{% url 'login' %}"
+              class="flex items-center space-x-2 text-[#3d2d29] hover:text-yellow-700 px-4 py-2 transition font-medium"
+            >
+              <i class="fas fa-user"></i>
+              <span>Login</span>
+            </a>
+          {% endif %}
+          <!-- Search Bar -->
+          <div class="relative hidden md:block">
+            <input
+              type="text"
+              placeholder="Search..!!"
+              class="w-40 py-1 px-2 rounded-full text-[#000000] bg-[#FFF9E5] border border-[#000000] shadow-md rounded-full focus:outline-none pr-10 shadow-md search-box"
+            />
+            <button
+              class="absolute right-0 top-0 mt-2 mr-4 text-black hover:text-gray-800"
+              title="Search"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Center: Logo -->
+        <a href="{% url 'index' %}" class="flex items-center space-x-4 order-2 mx-auto px-8">
+          <img
+            src="{% static 'images/CIA logo.png' %}"
+            alt="CIA MachineryHub logo"
+            class="h-10 rounded-lg logo-black-filter"
+          />
+          <span class="text-2xl font-bold text-black">CIA<span class="text-yellow-700">next</span></span>
+        </a>
+
+        <!-- Right Side: Navigation + Language - Added margin -->
+        <div class="hidden lg:flex items-center space-x-9 order-3 ml-4">
+          <a
+            href="{% url 'index' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition"
+            >Home</a>
+          <a
+            href="{% url 'about' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition"
+            >About Us</a
+          >
+          <a
+            href="{% url 'category' %}"
+            class="text-[#3d2d29] hover:text-yellow-700 font-medium transition"
+            >Category</a>
+          <!-- Language Toggle -->
+          <button id="languageToggle" class="flex items-center space-x-1 text-[#3d2d29] hover:text-yellow-700 font-medium transition px-2 py-1 rounded-lg border border-gray-300 hover:border-yellow-500">
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F8b4537dd3fc94785bf1c6169a3c80769%2Fe2eef99b80e945699b2f2503b5a83ffa?format=webp&width=800" alt="Language Toggle" class="w-4 h-4">
+            <span id="currentLang" class="text-sm">EN</span>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="lg:hidden order-3 flex items-center space-x-2">
+          <button id="mobileMenuBtn" class="relative p-2 text-[#3d2d29] hover:text-yellow-700 transition-all duration-300 focus:outline-none">
+            <div class="space-y-1">
+              <span class="hamburger-line block w-6 h-0.5 bg-current transition-all duration-300"></span>
+              <span class="hamburger-line block w-6 h-0.5 bg-current transition-all duration-300"></span>
+              <span class="hamburger-line block w-6 h-0.5 bg-current transition-all duration-300"></span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobileMenu" class="lg:hidden hidden bg-white border-t border-[#bba99a] shadow-lg">
+      <div class="absolute right-0 top-0 h-full w-80 max-w-sm bg-white shadow-xl">
+        <!-- Mobile Menu Header -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+          <div class="flex items-center space-x-2">
+            <img src="{% static 'images/CIA logo.png' %}" alt="CIA MachineryHub logo" class="h-8 rounded-lg">
+            <span class="text-lg font-bold text-black">CIA<span class="text-yellow-700">next</span></span>
+          </div>
+          <button id="mobileMenuClose" class="p-2 text-gray-500 hover:text-gray-700 transition">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Content -->
+        <div class="flex flex-col h-full">
+          <div class="flex-1 overflow-y-auto p-4">
+            <!-- User Profile Section -->
+            <div class="mb-6">
+              {% if user.is_authenticated %}
+                <div class="flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg">
+                  <div class="w-12 h-12 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                    {{ user.get_full_name|default:user.email|slice:":1"|upper }}
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-gray-800">{{ user.get_full_name|default:user.email }}</p>
+                    <p class="text-sm text-gray-600">{{ user.email }}</p>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <a href="{% url 'logout' %}" class="flex items-center space-x-2 w-full px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                  </a>
+                </div>
+              {% else %}
+                <a href="{% url 'login' %}" class="flex items-center space-x-2 w-full px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
+                  <i class="fas fa-user"></i>
+                  <span>Login / Sign Up</span>
+                </a>
+              {% endif %}
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="relative mb-6">
+              <input
+                type="text"
+                placeholder="Search products, suppliers..."
+                class="w-full py-3 px-4 pr-12 rounded-lg text-[#000000] bg-[#FFF9E5] border border-[#bba99a] focus:outline-none focus:ring-2 focus:ring-yellow-500 search-box"
+              />
+              <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="space-y-1">
+              <a href="{% url 'index' %}" class="flex items-center space-x-3 px-3 py-3 text-[#3d2d29] hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition">
+                <i class="fas fa-home w-5"></i>
+                <span class="font-medium">Home</span>
+              </a>
+              <a href="{% url 'about' %}" class="flex items-center space-x-3 px-3 py-3 text-[#3d2d29] hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition">
+                <i class="fas fa-info-circle w-5"></i>
+                <span class="font-medium">About Us</span>
+              </a>
+              <a href="{% url 'category' %}" class="flex items-center space-x-3 px-3 py-3 text-[#3d2d29] hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition">
+                <i class="fas fa-th-large w-5"></i>
+                <span class="font-medium">Categories</span>
+              </a>
+              <a href="{% url 'suppliers' %}" class="flex items-center space-x-3 px-3 py-3 text-[#3d2d29] hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition">
+                <i class="fas fa-building w-5"></i>
+                <span class="font-medium">Suppliers</span>
+              </a>
+              <a href="{% url 'announcement' %}" class="flex items-center space-x-3 px-3 py-3 text-[#3d2d29] hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition">
+                <i class="fas fa-bullhorn w-5"></i>
+                <span class="font-medium">Announcements</span>
+              </a>
+
+              <!-- Products Dropdown -->
+              <div class="border-t border-gray-200 pt-4 mt-4">
+                <button id="mobileProductsBtn" class="flex items-center justify-between w-full px-3 py-3 text-[#3d2d29] hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition">
+                  <div class="flex items-center space-x-3">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Products</span>
+                  </div>
+                  <i class="fas fa-chevron-down text-sm transition-transform duration-200" id="productsChevron"></i>
+                </button>
+                <div id="mobileProductsMenu" class="hidden mt-2 ml-8 space-y-1">
+                  <a href="#" class="block px-3 py-2 text-gray-600 hover:text-yellow-700 hover:bg-yellow-50 rounded transition">
+                    <i class="fas fa-wrench mr-2"></i>Engineering
+                  </a>
+                  <a href="#" class="block px-3 py-2 text-gray-600 hover:text-yellow-700 hover:bg-yellow-50 rounded transition">
+                    <i class="fas fa-industry mr-2"></i>Metal Working
+                  </a>
+                  <a href="#" class="block px-3 py-2 text-gray-600 hover:text-yellow-700 hover:bg-yellow-50 rounded transition">
+                    <i class="fas fa-cogs mr-2"></i>Production
+                  </a>
+                  <a href="#" class="block px-3 py-2 text-gray-600 hover:text-yellow-700 hover:bg-yellow-50 rounded transition">
+                    <i class="fas fa-box mr-2"></i>Packaging
+                  </a>
+                </div>
+              </div>
+            </nav>
+          </div>
+
+          <!-- Mobile Menu Footer -->
+          <div class="border-t border-gray-200 p-4">
+            <!-- Language Selector -->
+            <div class="mb-4">
+              <button id="mobileLanguageToggle" class="flex items-center justify-between w-full px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                <div class="flex items-center space-x-2">
+                  <img src="https://cdn.builder.io/api/v1/image/assets%2F8b4537dd3fc94785bf1c6169a3c80769%2Fe2eef99b80e945699b2f2503b5a83ffa?format=webp&width=800" alt="Language" class="w-5 h-5">
+                  <span class="font-medium">Language</span>
+                </div>
+                <span id="mobileLang" class="text-sm font-semibold text-yellow-600">English</span>
+              </button>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="text-center text-sm text-gray-500">
+              <p>&copy; 2025 CIA MachineryHub</p>
+              <p>All rights reserved</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-white text-gray-800 py-16 border-b">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Industrial Categories</h1>
+            <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
+                Explore our diverse manufacturing and industrial sectors in Coimbatore
+            </p>
+        </div>
+    </section>
+
+
+    <!-- Filter Section -->
+    <section class="bg-white py-6 border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-600">Showing all machinery categories</p>
+                </div>
+                <div class="flex space-x-4">
+                    <select class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Sort by: Popular</option>
+                        <option>Sort by: Name A-Z</option>
+                        <option>Sort by: Name Z-A</option>
+                        <option>Sort by: Most Products</option>
+                    </select>
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300">
+                        <i class="fas fa-filter mr-2"></i>
+                        Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories & Subcategories Grid -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {% for category in categories %}
+                    <!-- Category Card -->
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover group hover:shadow-xl transition-all duration-300">
+                        <div class="category-icon-circle w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                            <span class="text-3xl font-bold text-white">{{ category|slice:":1"|upper }}</span>
+                        </div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">{{ category }}</h3>
+                        <p class="text-gray-500 text-sm mb-3">{{ category_counts|get_item:category }}+ Companies</p>
+                        <button class="view-companies-btn bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300 w-full" 
+                                data-category="{{ category }}">
+                            <i class="fas fa-building mr-2"></i>
+                            View Companies
+                        </button>
+                    </div>
+                    {% with subcategories=category_subcategories|get_subcategories:category %}
+                        {% if subcategories %}
+                            {% for sub_category in subcategories %}
+                                <!-- Subcategory Card -->
+                                <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover group hover:shadow-xl transition-all duration-300">
+                                    <div class="category-icon-circle w-20 h-20 bg-gradient-to-br from-blue-200 to-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                                        <i class="fas fa-tag text-blue-500 text-3xl"></i>
+                                    </div>
+                                    <h3 class="font-semibold text-xl mb-2 text-gray-800">{{ sub_category }}</h3>
+                                    <p class="text-gray-500 text-sm mb-3">Subcategory of {{ category }}</p>
+                                    <button class="view-subcategory-companies-btn bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-lg transition-colors duration-300 w-full"
+                                            data-category="{{ category }}"
+                                            data-subcategory="{{ sub_category }}">
+                                        <i class="fas fa-building mr-2"></i>
+                                        View Companies
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Companies Modal -->
+    <div id="companiesModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg w-full max-w-4xl max-h-96 overflow-hidden flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h3 id="modalTitle" class="text-xl font-semibold">Companies in <span id="modalCategory"></span></h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="companiesList" class="p-4 overflow-y-auto flex-1">
+                    <!-- Companies will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <section class="py-12 bg-yellow-500 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Can't Find What You're Looking For?</h2>
+            <p class="text-xl mb-6 opacity-90">Contact our experts to help you find the perfect machinery for your needs</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="bg-white text-yellow-600 hover:bg-gray-100 px-8 py-3 rounded-full font-semibold transition-all duration-300">
+                    <i class="fas fa-phone mr-2"></i>
+                    Call Us: +91 12345 67890
+                </button>
+                <button class="bg-transparent border-2 border-white hover:bg-white hover:text-yellow-600 px-8 py-3 rounded-full font-semibold transition-all duration-300">
+                    <i class="fas fa-envelope mr-2"></i>
+                    Email Support
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-gray-800 pt-8 pb-6 border-t border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="{% static 'images/CIA logo.png' %}" alt="CIA MachineryHub logo" class="h-8 w-8 mr-2 rounded-lg">
+                        <div>
+                            <span class="text-lg font-bold">CIA</span>
+                            <span class="text-lg font-bold text-yellow-600">next</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                        India's premier heavy equipment marketplace connecting buyers and sellers since 2010.
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-300 hover:bg-yellow-500 text-gray-700 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 text-sm">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'index' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">Home</a></li>
+                        <li><a href="{% url 'about' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">About Us</a></li>
+                        <li><a href="{% url 'category' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">Categories</a></li>
+                        <li><a href="{% url 'suppliers' %}" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300 text-sm">Suppliers</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-gray-800">Contact Info</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start text-sm">
+                            <i class="fas fa-map-marker-alt text-yellow-600 mr-2 mt-0.5"></i>
+                            <span class="text-gray-600">MachineryHub Tower, Mumbai, India</span>
+                        </li>
+                        <li class="flex items-center text-sm">
+                            <i class="fas fa-phone-alt text-yellow-600 mr-2"></i>
+                            <a href="tel:+911234567890" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">+91 12345 67890</a>
+                        </li>
+                        <li class="flex items-center text-sm">
+                            <i class="fas fa-envelope text-yellow-600 mr-2"></i>
+                            <a href="mailto:contact@machineryhub.com" class="text-gray-600 hover:text-yellow-600 transition-colors duration-300">contact@machineryhub.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Bottom Section -->
+            <div class="border-t border-gray-300 mt-6 pt-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-500 text-sm mb-2 md:mb-0">
+                        &copy; 2025 CIA MachineryHub. All rights reserved.
+                    </div>
+                    <div class="flex space-x-4 text-sm">
+                        <a href="#" class="text-gray-500 hover:text-yellow-600 transition-colors duration-300">Privacy Policy</a>
+                        <a href="#" class="text-gray-500 hover:text-yellow-600 transition-colors duration-300">Terms of Service</a>
+                        <a href="#" class="text-gray-500 hover:text-yellow-600 transition-colors duration-300">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <!-- Company Details Modal -->
+    <div id="companyModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-white rounded-lg p-6 w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Company Details</h2>
+                <button onclick="closeCompanyModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="companyModalContent"></div>
+        </div>
+    </div>
+
+    
+    <script src="{% static 'js/category.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    
+    <script>
+    function openCompanyModal(companyId) {
+        // Fetch company details using AJAX
+        fetch(`/supplier/${companyId}/details/`)
+            .then(response => response.json())
+            .then(data => {
+                const modalContent = document.getElementById('companyModalContent');
+                
+                // Create HTML for product images
+                let productImagesHtml = '';
+                if (data.product_images && data.product_images.length > 0) {
+                    productImagesHtml = '<div class="mb-4"><h4 class="font-semibold mb-2">Product Images:</h4><div class="grid grid-cols-2 gap-2">';
+                    data.product_images.forEach(imageUrl => {
+                        productImagesHtml += `<img src="${imageUrl}" class="w-full h-32 object-cover rounded" />`;
+                    });
+                    productImagesHtml += '</div></div>';
+                }
+                
+                // Create HTML for subcategories
+                let subCategoriesHtml = '';
+                if (data.sub_categories && data.sub_categories.length > 0) {
+                    subCategoriesHtml = '<div class="mb-4"><h4 class="font-semibold mb-2">Sub-Categories:</h4><div class="flex flex-wrap gap-2">';
+                    data.sub_categories.forEach(subCategory => {
+                        subCategoriesHtml += `<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">${subCategory}</span>`;
+                    });
+                    subCategoriesHtml += '</div></div>';
+                }
+                
+                // Modal layout: logo and images left, details right
+                modalContent.innerHTML = `
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="md:w-1/3 flex flex-col items-center justify-start gap-4">
+                            ${data.logo ? `<img src="${data.logo}" class="w-24 h-24 object-contain rounded mb-2 border" />` : ''}
+                            ${data.image ? `<img src="${data.image}" class="w-full h-40 object-cover rounded mb-2 border" />` : ''}
+                            ${data.person_image ? `<img src="${data.person_image}" class="w-20 h-20 object-cover rounded mb-2 border" />` : ''}
+                        </div>
+                        <div class="md:w-2/3 flex flex-col gap-2">
+                            <h3 class="text-2xl font-bold mb-2 flex items-center gap-2">
+                                ${data.name}
+                                ${data.logo ? `<img src="${data.logo}" class="w-8 h-8 object-contain rounded border" />` : ''}
+                            </h3>
+                            <p class="mb-2 text-gray-700 font-semibold">CIA ID: <span class="text-blue-700">${data.cia_id}</span></p>
+                            <p class="mb-4 text-gray-700">${data.business_description || 'No description available'}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <h4 class="font-semibold">Company Information</h4>
+                                    <p><strong>Founder:</strong> ${data.founder_name || 'N/A'}</p>
+                                    <p><strong>Website:</strong> ${data.website_url ? `<a href="${data.website_url}" target="_blank" class="text-blue-600">${data.website_url}</a>` : 'N/A'}</p>
+                                    <p><strong>Category:</strong> ${data.category || 'N/A'}</p>
+                                    <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                                    <p><strong>Phone:</strong> ${data.phone_number || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Contact Person</h4>
+                                    <p><strong>Name:</strong> ${data.contact_person_name || 'N/A'}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h4 class="font-semibold mb-2">Address</h4>
+                                <p>${data.door_number || ''} ${data.street || ''}</p>
+                                <p>${data.area || ''}, ${data.city || ''}, ${data.state || ''} - ${data.pin_code || ''}</p>
+                            </div>
+                            
+                            ${subCategoriesHtml}
+                            
+                            <div class="mb-4">
+                                <h4 class="font-semibold mb-2">Products</h4>
+                                <ul class="list-disc pl-5">
+                                    ${data.product1 ? `<li>${data.product1}</li>` : ''}
+                                    ${data.product2 ? `<li>${data.product2}</li>` : ''}
+                                    ${data.product3 ? `<li>${data.product3}</li>` : ''}
+                                </ul>
+                            </div>
+                            
+                            ${productImagesHtml}
+                        </div>
+                    </div>
+                `;
+                document.getElementById('companyModal').classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error fetching company details:', error);
+                const modalContent = document.getElementById('companyModalContent');
+                modalContent.innerHTML = `<p class="text-red-500">Error loading company details. Please try again.</p>`;
+                document.getElementById('companyModal').classList.remove('hidden');
+            });
+    }
+
+    function closeCompanyModal() {
+        document.getElementById('companyModal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('companyModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCompanyModal();
+        }
+    });
+
+    // Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('companyModal').classList.contains('hidden')) {
+            closeCompanyModal();
+        }
+    });
+    </script>
+    
+</body>
+</html>
+    function closeCompanyModal() {
+        document.getElementById('companyModal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('companyModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCompanyModal();
+        }
+    });
+
+    // Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('companyModal').classList.contains('hidden')) {
+            closeCompanyModal();
+        }
+    });
+    </script>
+    
+</body>
+</html>
