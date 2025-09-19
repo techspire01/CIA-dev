@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -314,14 +315,14 @@
             <div class="supplier-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <!-- Image Section -->
               <div class="relative h-48 flex-shrink-0">
-                {% if supplier.image %}
-                  <img src="{{ supplier.image.url }}" alt="{{ supplier.name }}" class="w-full h-full object-cover"
+              {% if supplier.image_url %}
+                  <img src="{{ supplier.image_url }}" alt="{{ supplier.name }}" class="w-full h-full object-cover"
                        onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-image').style.display='flex';" />
                   <div class="fallback-image w-full h-full bg-gradient-to-br from-blue-500 to-blue-700 items-center justify-center" style="display: none;">
                     <span class="text-white text-4xl font-bold">{{ supplier.name|slice:":2"|upper }}</span>
                   </div>
-                {% elif supplier.logo %}
-                  <img src="{{ supplier.logo.url }}" alt="{{ supplier.name }}" class="w-full h-full object-contain bg-gray-50 p-4"
+                {% elif supplier.logo_url %}
+                  <img src="{{ supplier.logo_url }}" alt="{{ supplier.name }}" class="w-full h-full object-contain bg-gray-50 p-4"
                        onerror="this.style.display='none'; this.parentNode.querySelector('.fallback-image').style.display='flex';" />
                   <div class="fallback-image w-full h-full bg-gradient-to-br from-green-500 to-green-700 items-center justify-center" style="display: none;">
                     <span class="text-white text-4xl font-bold">{{ supplier.name|slice:":2"|upper }}</span>
@@ -515,10 +516,18 @@
                 <div class="mb-4">
                   <h4 class="font-semibold mb-2">Products</h4>
                   <ul class="list-disc pl-5">
-                    ${data.product1 ? `<li>${data.product1}</li>` : ''}
-                    ${data.product2 ? `<li>${data.product2}</li>` : ''}
-                    ${data.product3 ? `<li>${data.product3}</li>` : ''}
+                    ${data.products && data.products.length > 0 ? data.products.map(product => `<li>${product}</li>`).join('') : '<li>No products listed</li>'}
                   </ul>
+                </div>
+
+                <div class="mb-4">
+                  <h4 class="font-semibold mb-2">Additional Information</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    ${data.gstno ? `<p><strong>GST No:</strong> ${data.gstno}</p>` : ''}
+                    ${data.total_employees ? `<p><strong>Total Employees:</strong> ${data.total_employees}</p>` : ''}
+                    ${data.instagram ? `<p><strong>Instagram:</strong> <a href="${data.instagram}" target="_blank" class="text-blue-600">${data.instagram}</a></p>` : ''}
+                    ${data.facebook ? `<p><strong>Facebook:</strong> <a href="${data.facebook}" target="_blank" class="text-blue-600">${data.facebook}</a></p>` : ''}
+                  </div>
                 </div>
                 
                 ${productImagesHtml}

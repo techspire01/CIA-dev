@@ -18,23 +18,23 @@ def index(request):
         random_suppliers = random.sample(all_suppliers, 3)
     else:
         random_suppliers = all_suppliers
-    
+
     # Fetch all unique categories from Supplier model (like in category view)
     categories = Supplier.objects.values_list('category', flat=True).distinct()
     categories = [cat for cat in categories if cat]  # Remove None/empty values
-    
+
     # Count suppliers for each category
     category_counts = {}
     for category_name in categories:
         count = Supplier.objects.filter(category=category_name).count()
         category_counts[category_name] = count
-    
+
     # Build a dictionary mapping category to its subcategories
     category_subcategories = {}
     for category_name in categories:
         sub_cats = set()
         suppliers_in_cat = Supplier.objects.filter(category=category_name)
-        for i in range(1, 7):
+        for i in range(1, 4):
             sub_cats.update(suppliers_in_cat.values_list(f'sub_category{i}', flat=True).distinct())
         sub_cats.discard(None)
         category_subcategories[category_name] = sorted(sub_cats)
@@ -108,19 +108,19 @@ def category(request):
     # Fetch all unique categories from Supplier model
     categories = Supplier.objects.values_list('category', flat=True).distinct()
     categories = [cat for cat in categories if cat]  # Remove None/empty values
-    
+
     # Count suppliers for each category
     category_counts = {}
     for category_name in categories:
         count = Supplier.objects.filter(category=category_name).count()
         category_counts[category_name] = count
-    
+
     # Build a dictionary mapping category to its subcategories
     category_subcategories = {}
     for category_name in categories:
         sub_cats = set()
         suppliers_in_cat = Supplier.objects.filter(category=category_name)
-        for i in range(1, 7):
+        for i in range(1, 4):
             sub_cats.update(suppliers_in_cat.values_list(f'sub_category{i}', flat=True).distinct())
         sub_cats.discard(None)
         category_subcategories[category_name] = sorted(sub_cats)
@@ -165,17 +165,21 @@ def suppliers(request):
             models.Q(category__icontains=category) |
             models.Q(sub_category1__icontains=category) |
             models.Q(sub_category2__icontains=category) |
-            models.Q(sub_category3__icontains=category) |
-            models.Q(sub_category4__icontains=category) |
-            models.Q(sub_category5__icontains=category) |
-            models.Q(sub_category6__icontains=category)
+            models.Q(sub_category3__icontains=category)
         )
     
     if product_filter:
         suppliers = suppliers.filter(
             models.Q(product1__icontains=product_filter) |
             models.Q(product2__icontains=product_filter) |
-            models.Q(product3__icontains=product_filter)
+            models.Q(product3__icontains=product_filter) |
+            models.Q(product4__icontains=product_filter) |
+            models.Q(product5__icontains=product_filter) |
+            models.Q(product6__icontains=product_filter) |
+            models.Q(product7__icontains=product_filter) |
+            models.Q(product8__icontains=product_filter) |
+            models.Q(product9__icontains=product_filter) |
+            models.Q(product10__icontains=product_filter)
         )
 
     if search_query:
@@ -184,13 +188,17 @@ def suppliers(request):
             models.Q(product1__icontains=search_query) |
             models.Q(product2__icontains=search_query) |
             models.Q(product3__icontains=search_query) |
+            models.Q(product4__icontains=search_query) |
+            models.Q(product5__icontains=search_query) |
+            models.Q(product6__icontains=search_query) |
+            models.Q(product7__icontains=search_query) |
+            models.Q(product8__icontains=search_query) |
+            models.Q(product9__icontains=search_query) |
+            models.Q(product10__icontains=search_query) |
             models.Q(category__icontains=search_query) |
             models.Q(sub_category1__icontains=search_query) |
             models.Q(sub_category2__icontains=search_query) |
-            models.Q(sub_category3__icontains=search_query) |
-            models.Q(sub_category4__icontains=search_query) |
-            models.Q(sub_category5__icontains=search_query) |
-            models.Q(sub_category6__icontains=search_query)
+            models.Q(sub_category3__icontains=search_query)
         )
 
     count = suppliers.count()
@@ -198,14 +206,21 @@ def suppliers(request):
     # Get all categories and subcategories for the filter dropdowns
     categories = Supplier.objects.values_list('category', flat=True).distinct()
     sub_categories = set()
-    for i in range(1, 7):
+    for i in range(1, 4):
         sub_categories.update(Supplier.objects.values_list(f'sub_category{i}', flat=True).distinct())
     sub_categories.discard(None)  # Remove None values
-    
+
     products = list(set(
         list(Supplier.objects.values_list('product1', flat=True).distinct()) +
         list(Supplier.objects.values_list('product2', flat=True).distinct()) +
-        list(Supplier.objects.values_list('product3', flat=True).distinct())
+        list(Supplier.objects.values_list('product3', flat=True).distinct()) +
+        list(Supplier.objects.values_list('product4', flat=True).distinct()) +
+        list(Supplier.objects.values_list('product5', flat=True).distinct()) +
+        list(Supplier.objects.values_list('product6', flat=True).distinct()) +
+        list(Supplier.objects.values_list('product7', flat=True).distinct()) +
+        list(Supplier.objects.values_list('product8', flat=True).distinct()) +
+        list(Supplier.objects.values_list('product9', flat=True).distinct()) +
+        list(Supplier.objects.values_list('product10', flat=True).distinct())
     ))
     products = [p for p in products if p]  # Remove empty strings
 
@@ -328,30 +343,51 @@ def supplier_details(request, supplier_id):
             sub_category = getattr(supplier, f'sub_category{i}')
             if sub_category:
                 sub_categories.append(sub_category)
-        
+
         # Prepare product images URLs if they exist
         product_images = []
-        for i in range(1, 5):
-            image_field = getattr(supplier, f'product_image{i}')
-            if image_field:
-                product_images.append(image_field.url)
+        for i in range(1, 11):
+            image_url = getattr(supplier, f'product_image{i}_url')
+            if image_url:
+                product_images.append(image_url)
         
+        # Prepare products list
+        products = []
+        for i in range(1, 11):
+            product = getattr(supplier, f'product{i}')
+            if product:
+                products.append(product)
+
+        # Handle logo URL
+        logo_url = supplier.logo_url
+
+        # Handle main image URL
+        image_url = supplier.image_url
+
+        # Handle person image URL
+        person_image_url = supplier.person_image_url
+
+        # Handle product image URLs
+        product_images_with_urls = []
+        for i in range(1, 11):
+            image_url = getattr(supplier, f'product_image{i}_url')
+            if image_url:
+                product_images_with_urls.append(image_url)
+
         data = {
             "cia_id": supplier.cia_id,  # add cia_id
             "name": supplier.name,
             "founder_name": supplier.founder_name,
             "website_url": supplier.website_url,
-            "logo": supplier.logo.url if supplier.logo else None,
-            "image": supplier.image.url if supplier.image else None,
+            "logo": logo_url,
+            "image": image_url,
             "category": supplier.category,
             "sub_categories": sub_categories,
             "email": supplier.email,
             "contact_person_name": supplier.contact_person_name,
-            "person_image": supplier.person_image.url if supplier.person_image else None,
-            "product1": supplier.product1,
-            "product2": supplier.product2,
-            "product3": supplier.product3,
-            "product_images": product_images,
+            "person_image": person_image_url,
+            "products": products,
+            "product_images": product_images_with_urls,
             "door_number": supplier.door_number,
             "street": supplier.street,
             "area": supplier.area,
@@ -360,6 +396,10 @@ def supplier_details(request, supplier_id):
             "pin_code": supplier.pin_code,
             "business_description": supplier.business_description,
             "phone_number": supplier.phone_number,
+            "gstno": supplier.gstno,
+            "instagram": supplier.instagram,
+            "facebook": supplier.facebook,
+            "total_employees": supplier.total_employees,
         }
         return JsonResponse(data)
     except Supplier.DoesNotExist:
@@ -375,10 +415,7 @@ def companies_by_category(request):
         models.Q(category__iexact=category) |
         models.Q(sub_category1__iexact=category) |
         models.Q(sub_category2__iexact=category) |
-        models.Q(sub_category3__iexact=category) |
-        models.Q(sub_category4__iexact=category) |
-        models.Q(sub_category5__iexact=category) |
-        models.Q(sub_category6__iexact=category)
+        models.Q(sub_category3__iexact=category)
     )
     
     data = []
@@ -386,9 +423,9 @@ def companies_by_category(request):
         data.append({
             "id": supplier.id,
             "name": supplier.name,
-            "logo": supplier.logo.url if supplier.logo else None,
+            "logo": supplier.logo_url,
             "category": supplier.category,
-            "sub_categories": [getattr(supplier, f'sub_category{i}') for i in range(1,7) if getattr(supplier, f'sub_category{i}')],
+            "sub_categories": [getattr(supplier, f'sub_category{i}') for i in range(1,4) if getattr(supplier, f'sub_category{i}')],
             "email": supplier.email,
             "phone_number": supplier.phone_number,
         })
@@ -408,13 +445,20 @@ def search_suggestions(request):
         models.Q(sub_category1__icontains=query) |
         models.Q(sub_category2__icontains=query) |
         models.Q(sub_category3__icontains=query) |
-        models.Q(sub_category4__icontains=query) |
-        models.Q(sub_category5__icontains=query) |
-        models.Q(sub_category6__icontains=query) |
         models.Q(product1__icontains=query) |
         models.Q(product2__icontains=query) |
         models.Q(product3__icontains=query) |
-        models.Q(business_description__icontains=query)
+        models.Q(product4__icontains=query) |
+        models.Q(product5__icontains=query) |
+        models.Q(product6__icontains=query) |
+        models.Q(product7__icontains=query) |
+        models.Q(product8__icontains=query) |
+        models.Q(product9__icontains=query) |
+        models.Q(product10__icontains=query) |
+        models.Q(business_description__icontains=query) |
+        models.Q(gstno__icontains=query) |
+        models.Q(instagram__icontains=query) |
+        models.Q(facebook__icontains=query)
     )[:10]  # Limit to 10 results
     
     suggestions = []
@@ -434,10 +478,7 @@ def search_suggestions(request):
         models.Q(category__icontains=query) |
         models.Q(sub_category1__icontains=query) |
         models.Q(sub_category2__icontains=query) |
-        models.Q(sub_category3__icontains=query) |
-        models.Q(sub_category4__icontains=query) |
-        models.Q(sub_category5__icontains=query) |
-        models.Q(sub_category6__icontains=query)
+        models.Q(sub_category3__icontains=query)
     ).values_list('category', flat=True).distinct()[:5]
     
     for category in categories:
@@ -453,8 +494,15 @@ def search_suggestions(request):
     products = Supplier.objects.filter(
         models.Q(product1__icontains=query) |
         models.Q(product2__icontains=query) |
-        models.Q(product3__icontains=query)
-    ).values_list('product1', 'product2', 'product3').distinct()[:5]
+        models.Q(product3__icontains=query) |
+        models.Q(product4__icontains=query) |
+        models.Q(product5__icontains=query) |
+        models.Q(product6__icontains=query) |
+        models.Q(product7__icontains=query) |
+        models.Q(product8__icontains=query) |
+        models.Q(product9__icontains=query) |
+        models.Q(product10__icontains=query)
+    ).values_list('product1', 'product2', 'product3', 'product4', 'product5', 'product6', 'product7', 'product8', 'product9', 'product10').distinct()[:5]
     
     for product_tuple in products:
         for product in product_tuple:
@@ -480,12 +528,12 @@ def search_suggestions(request):
 def search_api(request):
     """Search API endpoint that searches both database and HTML content"""
     query = request.GET.get('q', '').strip()
-    
+
     if not query:
         return JsonResponse({"results": []})
-    
+
     results = []
-    
+
     # Search in database (suppliers and announcements)
     supplier_results = Supplier.objects.filter(
         models.Q(name__icontains=query) |
@@ -493,17 +541,24 @@ def search_api(request):
         models.Q(sub_category1__icontains=query) |
         models.Q(sub_category2__icontains=query) |
         models.Q(sub_category3__icontains=query) |
-        models.Q(sub_category4__icontains=query) |
-        models.Q(sub_category5__icontains=query) |
-        models.Q(sub_category6__icontains=query) |
         models.Q(product1__icontains=query) |
         models.Q(product2__icontains=query) |
         models.Q(product3__icontains=query) |
+        models.Q(product4__icontains=query) |
+        models.Q(product5__icontains=query) |
+        models.Q(product6__icontains=query) |
+        models.Q(product7__icontains=query) |
+        models.Q(product8__icontains=query) |
+        models.Q(product9__icontains=query) |
+        models.Q(product10__icontains=query) |
         models.Q(business_description__icontains=query) |
         models.Q(founder_name__icontains=query) |
         models.Q(contact_person_name__icontains=query) |
         models.Q(city__icontains=query) |
-        models.Q(state__icontains=query)
+        models.Q(state__icontains=query) |
+        models.Q(gstno__icontains=query) |
+        models.Q(instagram__icontains=query) |
+        models.Q(facebook__icontains=query)
     )[:20]
     
     for supplier in supplier_results:
@@ -629,13 +684,13 @@ def get_url_from_template(template_name):
 def search_results(request):
     """Search results page view"""
     query = request.GET.get('q', '').strip()
-    
+
     if not query:
         return redirect('index')
-    
+
     # Use the same search logic as the API but return the results directly
     results = []
-    
+
     # Search in database (suppliers and announcements)
     supplier_results = Supplier.objects.filter(
         models.Q(name__icontains=query) |
@@ -643,17 +698,24 @@ def search_results(request):
         models.Q(sub_category1__icontains=query) |
         models.Q(sub_category2__icontains=query) |
         models.Q(sub_category3__icontains=query) |
-        models.Q(sub_category4__icontains=query) |
-        models.Q(sub_category5__icontains=query) |
-        models.Q(sub_category6__icontains=query) |
         models.Q(product1__icontains=query) |
         models.Q(product2__icontains=query) |
         models.Q(product3__icontains=query) |
+        models.Q(product4__icontains=query) |
+        models.Q(product5__icontains=query) |
+        models.Q(product6__icontains=query) |
+        models.Q(product7__icontains=query) |
+        models.Q(product8__icontains=query) |
+        models.Q(product9__icontains=query) |
+        models.Q(product10__icontains=query) |
         models.Q(business_description__icontains=query) |
         models.Q(founder_name__icontains=query) |
         models.Q(contact_person_name__icontains=query) |
         models.Q(city__icontains=query) |
-        models.Q(state__icontains=query)
+        models.Q(state__icontains=query) |
+        models.Q(gstno__icontains=query) |
+        models.Q(instagram__icontains=query) |
+        models.Q(facebook__icontains=query)
     )[:20]
     
     for supplier in supplier_results:

@@ -1,6 +1,4 @@
-# TODO: Fix 404 Error for PhotoGallery Admin Add Page
-
-- [x] Register PhotoGallery model in Django admin by editing app/admin.py
-  - Import PhotoGallery from models
-  - Create PhotoGalleryAdmin class with list_display, list_filter, search_fields
-  - Register PhotoGallery with admin.site.register
+- [x] Update suppliers.html template to use image_url and logo_url fields without .url
+- [x] Update supplier_details view in views.py to use product_image{i}_url fields and remove .url
+- [x] Update companies_by_category view to use logo_url field
+- [ ] Investigate and fix the 'get_attr' filter error if present
