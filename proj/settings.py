@@ -110,7 +110,7 @@ DATABASES = {
         default=f"postgres://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}:{os.environ.get('DB_PORT')}/{os.environ.get('DB_NAME')}"
     )
 }
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -133,7 +133,7 @@ DATABASES = {
     }
 }
 
-
+'''
 
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
