@@ -148,3 +148,17 @@ class PhotoGallery(models.Model):
 
     def __str__(self):
         return self.title or f"Photo {self.id}"
+
+class IndexHover(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255)
+    caption = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to="index_hover/images/", blank=True, null=True)
+    image_url = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title

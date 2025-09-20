@@ -1,4 +1,0 @@
-- [x] Update suppliers.html template to use image_url and logo_url fields without .url
-- [x] Update supplier_details view in views.py to use product_image{i}_url fields and remove .url
-- [x] Update companies_by_category view to use logo_url field
-- [ ] Investigate and fix the 'get_attr' filter error if present
