@@ -26,10 +26,10 @@ class CustomUserAdmin(UserAdmin):
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
     list_display = (
-        "name", 
+        "name",
         "business_description_display",
-        "phone_number", 
-        "formatted_address", 
+        "phone_number",
+        "formatted_address",
         "created_at",
         'founder_name',
         'website_url',
@@ -37,14 +37,49 @@ class SupplierAdmin(admin.ModelAdmin):
         'email',
         'contact_person_name'
     )
-    
+
+    # Enable search functionality
+    search_fields = (
+        'name',
+        'email',
+        'phone_number',
+        'category',
+        'sub_category1',
+        'sub_category2',
+        'sub_category3',
+        'sub_category4',
+        'sub_category5',
+        'sub_category6',
+        'founder_name',
+        'contact_person_name',
+        'city',
+        'state',
+        'area',
+        'business_description',
+        'gstno',
+        'website_url'
+    )
+
+    # Enable filtering
+    list_filter = (
+        'category',
+        'state',
+        'created_at'
+    )
+
+    # Default ordering
+    ordering = ('name',)
+
+    # Items per page
+    list_per_page = 25
+
     def business_description_display(self, obj):
         """Display first 50 characters of business description"""
         if obj.business_description:
             return obj.business_description[:50] + "..." if len(obj.business_description) > 50 else obj.business_description
         return "-"
     business_description_display.short_description = "Business Description"
-    
+
     def formatted_address(self, obj):
         """Format the address from individual fields"""
         address_parts = []
@@ -60,7 +95,7 @@ class SupplierAdmin(admin.ModelAdmin):
             address_parts.append(obj.state)
         if obj.pin_code:
             address_parts.append(obj.pin_code)
-        
+
         return ", ".join(address_parts) if address_parts else "-"
     formatted_address.short_description = "Address"
 
