@@ -1,7 +1,9 @@
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from .models import CustomUser, Supplier, Announcement, PhotoGallery, IndexHover
+from .forms import SupplierForm
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
@@ -25,8 +27,6 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
-
-    from .forms import SupplierForm
     form = SupplierForm
 
     list_display = (

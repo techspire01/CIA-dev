@@ -5,11 +5,15 @@ from .models import Supplier
 
 class SupplierForm(forms.ModelForm):
 
-    category_choices = [(cat, cat) for cat in Supplier.objects.exclude(category__isnull=True).exclude(category__exact='').values_list('category', flat=True).distinct()]
-    category_choices.append(('__add_new__', 'Add new category'))
-
-    category = forms.ChoiceField(choices=category_choices, required=False)
+    category = forms.ChoiceField(required=False)
     new_category = forms.CharField(required=False, label='New Category')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        categories = Supplier.objects.exclude(category__isnull=True).exclude(category__exact='').values_list('category', flat=True).distinct()
+        choices = [(cat, cat) for cat in categories]
+        choices.append(('__add_new__', 'Add new category'))
+        self.fields['category'].choices = choices
 
     def clean_logo_url(self):
         url = self.cleaned_data.get('logo_url')
