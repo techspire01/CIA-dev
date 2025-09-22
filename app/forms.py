@@ -4,6 +4,13 @@ from django.core.exceptions import ValidationError
 from .models import Supplier
 
 class SupplierForm(forms.ModelForm):
+
+    category_choices = [(cat, cat) for cat in Supplier.objects.exclude(category__isnull=True).exclude(category__exact='').values_list('category', flat=True).distinct()]
+    category_choices.append(('__add_new__', 'Add new category'))
+
+    category = forms.ChoiceField(choices=category_choices, required=False)
+    new_category = forms.CharField(required=False, label='New Category')
+
     def clean_logo_url(self):
         url = self.cleaned_data.get('logo_url')
         if url:
@@ -13,6 +20,26 @@ class SupplierForm(forms.ModelForm):
             except ValidationError:
                 raise ValidationError("Enter a valid URL.")
         return url
+
+    def clean(self):
+        cleaned_data = super().clean()
+        category = cleaned_data.get('category')
+        new_category = cleaned_data.get('new_category')
+        if category == '__add_new__' and not new_category:
+            self.add_error('new_category', 'Please enter a new category.')
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        category = self.cleaned_data.get('category')
+        new_category = self.cleaned_data.get('new_category')
+        if category == '__add_new__' and new_category:
+            instance.category = new_category
+        else:
+            instance.category = category
+        if commit:
+            instance.save()
+        return instance
 
     class Meta:
         model = Supplier
