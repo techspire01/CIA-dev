@@ -769,3 +769,24 @@ def photo_gallery(request):
         'total_photos': all_photos.count()
     }
     return render(request, "photo_gallery.html", context)
+
+@require_GET
+def get_supplier_categories(request):
+    """
+    AJAX endpoint to get all supplier categories for dynamic dropdown updates
+    """
+    try:
+        # Get all unique categories from Supplier model
+        categories = Supplier.objects.values_list('category', flat=True).distinct()
+        categories = [cat for cat in categories if cat]  # Remove None/empty values
+        categories = sorted(categories)  # Sort alphabetically
+
+        return JsonResponse({
+            'success': True,
+            'categories': categories
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
